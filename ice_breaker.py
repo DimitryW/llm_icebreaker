@@ -1,7 +1,9 @@
 import os
 from dotenv import load_dotenv
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 information = """
 Elon Reeve Musk (/ˈiːlɒn mʌsk/; born June 28, 1971) is a businessman and U.S. special government employee, 
@@ -24,8 +26,9 @@ if __name__ == "__main__":
     summary_prompt_template = PromptTemplate(
         input_variables=["information"], template=summary_template
     )
-    llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
-    chain = summary_prompt_template | llm
+    # llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
+    llm = ChatOllama(model="mistral")  # make sure ollama is activated, and the model is installed
+    chain = summary_prompt_template | llm | StrOutputParser()
     res = chain.invoke(input={"information": information})
 
     print(res)
